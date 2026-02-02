@@ -1,106 +1,50 @@
-import random
+def updateText(word, ketebak, guess):
+    text = ''
 
-# List of secret words
-secret_words = [
-    "nasi padang",
-    "ayam suir",
-    "rendang",
-    "sate ayam",
-    "gudeg",
-    "bakso",
-    "mie goreng",
-    "pizza",
-    "burger",
-    "sushi"
-]
+    for letter in word:
+        if letter in ketebak:
+            text += letter + " "
+        else:
+            text += "_ "
 
-# Global variables for score tracking
-wins = 0
-losses = 0
+    if guess in word:
+        print(f"ternyata {guess} ada di dalam kata")
+    else:
+        print(f"woy, huruf {guess} ga ada di dalam kata")
 
-def play_hangman():
-    global wins, losses
+    print(text)
+    return text
 
-    if not secret_words:
-        print("Tidak ada kata tersisa untuk dimainkan!")
-        return False
+def main(word):
+    chances = 5
+    ketebak = []
+    text = ''
 
-    # Pick a random word and remove it from the list
-    secret_word = random.choice(secret_words)
-    secret_words.remove(secret_word)
+    for letter in word:
+        text += "_ "
 
-    guessed_letters = ""
-    chance = 6  # Standard hangman has 6 chances
+    print('hangman with argha')
+    print("word:", text)
 
-    print("Game Hangman by Argha")
-    print("Kata rahasia memiliki", len(secret_word), "karakter")
+    while chances > 0 and "_" in text:
+        guess = input("guess a letter: ")
 
-    while chance > 0:
-        letter = input("Masukkan satu huruf: ")
-
-        # Check valid input
-        if len(letter) != 1 or not letter.isalpha():
-            print("Input harus satu huruf!")
+        if not guess.isalpha() or len(guess) != 1:
+            print("1 huruf aja, jangan maruk")
             continue
 
-        letter = letter.lower()
+        guess = guess.lower()
+        ketebak.append(guess)
 
-        # Check if letter already guessed
-        if letter in guessed_letters:
-            print("Huruf sudah ditebak!")
-            continue
+        text = updateText(word, ketebak, guess)
 
-        guessed_letters += letter
+        if guess not in word:
+            chances -= 1
+            print(f"you only have: {chances} chances left.")
 
-        # Check if letter is correct
-        if letter in secret_word:
-            print("Benar!")
-        else:
-            chance -= 1
-            print("SALAH! Sisa kesempatan:", chance)
+    if '_' not in text:
+        print("selamat pasep udah menebak kata dengan benar")
+    else:
+        print(f"LU KALAH AYAM")
 
-        # Display current state
-        display_word = ""
-        for char in secret_word:
-            if char == " ":
-                display_word += " "
-            elif char in guessed_letters:
-                display_word += char
-            else:
-                display_word += "_"
-
-        print("Kata:", display_word)
-
-        # Check if won
-        if "_" not in display_word:
-            print("Selamat! Kata berhasil ditebak:", secret_word)
-            wins += 1
-            return True
-
-    # Lost the game
-    print("Game over! Kata rahasia adalah:", secret_word)
-    losses += 1
-    return True
-
-# Main game loop
-while True:
-    if not play_hangman():
-        break
-
-    # Display current score
-    print(f"\nSkor saat ini - Menang: {wins}, Kalah: {losses}")
-
-    # Ask to play again
-    while True:
-        choice = input("Apakah ingin bermain lagi? (y/n): ").lower()
-        if choice == 'y':
-            break
-        elif choice == 'n':
-            print(f"\nSkor akhir - Menang: {wins}, Kalah: {losses}")
-            print("Terima kasih telah bermain!")
-            exit()
-        else:
-            print("Masukkan y atau n!")
-
-print(f"\nSkor akhir - Menang: {wins}, Kalah: {losses}")
-print("Terima kasih telah bermain!")
+main("papeda")
